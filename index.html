@@ -7,16 +7,39 @@
     canvas {
       background: #f0f0f0;
       display: block;
-      margin: 0 auto;
+      margin: 20px auto;
       border: 2px solid #333;
+    }
+    #startScreen {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #playerName {
+      padding: 8px;
+      font-size: 16px;
+    }
+    #startBtn {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="500" height="600"></canvas>
+  <!-- Màn hình nhập tên -->
+  <div id="startScreen">
+    <h2>Nhập tên người chơi</h2>
+    <input type="text" id="playerName" placeholder="Tên của bạn...">
+    <button id="startBtn">Bắt đầu</button>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas" width="500" height="600" style="display:none;"></canvas>
+
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+    let playerName = "";
 
     // Người chơi
     const player = {
@@ -27,15 +50,15 @@
       speed: 7
     };
 
-    // Bóng (giữ nguyên logic nhưng thêm hình ảnh)
+    // Bóng (sử dụng hình ảnh)
     let ball = {
-      x: Math.random() * (canvas.width - 20),
+      x: Math.random() * (canvas.width - 40),
       y: 0,
-      size: 40, // thay đổi size để dễ nhìn hình ảnh
+      size: 40,
       speed: 4,
       img: new Image()
     };
-    ball.img.src = "ball.png"; // ảnh trong cùng thư mục với index.html
+    ball.img.src = "ball.png"; // nhớ có file ảnh trong thư mục
 
     let score = 0;
     let lives = 3;
@@ -56,8 +79,9 @@
     function drawInfo() {
       ctx.fillStyle = "black";
       ctx.font = "20px Arial";
-      ctx.fillText("Score: " + score, 10, 20);
-      ctx.fillText("Lives: " + lives, 10, 45);
+      ctx.fillText("Tên: " + playerName, 10, 20);
+      ctx.fillText("Score: " + score, 10, 45);
+      ctx.fillText("Lives: " + lives, 10, 70);
     }
 
     function movePlayer() {
@@ -113,10 +137,18 @@
       }
     }
 
-    // Đảm bảo load ảnh xong mới bắt đầu game
-    ball.img.onload = () => {
-      gameLoop();
-    };
+    // Khi nhấn nút "Bắt đầu"
+    document.getElementById("startBtn").addEventListener("click", () => {
+      playerName = document.getElementById("playerName").value.trim();
+      if (playerName === "") playerName = "Người chơi";
+
+      document.getElementById("startScreen").style.display = "none";
+      canvas.style.display = "block";
+
+      ball.img.onload = () => {
+        gameLoop();
+      };
+    });
   </script>
 </body>
 </html>
