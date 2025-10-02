@@ -10,30 +10,41 @@
       margin: 0 auto;
       border: 2px solid #333;
     }
+    #description {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 10px;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="500" height="600"></canvas>
+  
+  <!-- Mô tả dưới canvas -->
+  <p id="description">Move left or right to earn points</p>
+
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Người chơi (dùng ảnh paddle)
+    // Người chơi (paddle bằng ảnh)
     const player = {
       x: canvas.width / 2 - 60,
       y: canvas.height - 40,
-      width: 200,   // chiều rộng paddle
-      height: 40,   // chiều cao paddle
+      width: 120,
+      height: 30,
       speed: 7,
       img: new Image()
     };
-    player.img.src = "paddle.png"; // ảnh thanh ngang bạn cung cấp
+    player.img.src = "paddle.png";
 
-    // Bóng (dùng ảnh)
+    // Bóng (ảnh)
     let ball = {
       x: Math.random() * (canvas.width - 40),
       y: 0,
-      size: 80,
+      size: 40,
       speed: 4,
       img: new Image()
     };
@@ -127,7 +138,6 @@
       }
     }
 
-    // Chỉ bắt đầu sau khi ảnh load
     player.img.onload = () => {
       ball.img.onload = () => {
         gameLoop();
@@ -136,4 +146,3 @@
   </script>
 </body>
 </html>
-
