@@ -27,13 +27,15 @@
       speed: 7
     };
 
-    // Bóng
+    // Bóng (giữ nguyên logic nhưng thêm hình ảnh)
     let ball = {
       x: Math.random() * (canvas.width - 20),
       y: 0,
-      size: 20,
-      speed: 4
+      size: 40, // thay đổi size để dễ nhìn hình ảnh
+      speed: 4,
+      img: new Image()
     };
+    ball.img.src = "ball.png"; // ảnh trong cùng thư mục với index.html
 
     let score = 0;
     let lives = 3;
@@ -48,11 +50,7 @@
     }
 
     function drawBall() {
-      ctx.beginPath();
-      ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
-      ctx.fillStyle = "red";
-      ctx.fill();
-      ctx.closePath();
+      ctx.drawImage(ball.img, ball.x, ball.y, ball.size, ball.size);
     }
 
     function drawInfo() {
@@ -115,7 +113,10 @@
       }
     }
 
-    gameLoop();
+    // Đảm bảo load ảnh xong mới bắt đầu game
+    ball.img.onload = () => {
+      gameLoop();
+    };
   </script>
 </body>
 </html>
