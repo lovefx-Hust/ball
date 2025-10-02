@@ -27,13 +27,15 @@
       speed: 7
     };
 
-    // Bóng
+    // Bóng (dùng ảnh)
     let ball = {
-      x: Math.random() * (canvas.width - 20),
+      x: Math.random() * (canvas.width - 40),
       y: 0,
-      size: 20,
-      speed: 4
+      size: 40,
+      speed: 4,
+      img: new Image()
     };
+    ball.img.src = "ball.png"; // ảnh của bạn
 
     let score = 0;
     let lives = 3;
@@ -48,11 +50,16 @@
     }
 
     function drawBall() {
-      ctx.beginPath();
-      ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
-      ctx.fillStyle = "red";
-      ctx.fill();
-      ctx.closePath();
+      // Nếu ảnh load xong thì vẽ ảnh, nếu chưa load thì vẽ tạm hình tròn
+      if (ball.img.complete) {
+        ctx.drawImage(ball.img, ball.x, ball.y, ball.size, ball.size);
+      } else {
+        ctx.beginPath();
+        ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.closePath();
+      }
     }
 
     function drawInfo() {
@@ -115,7 +122,10 @@
       }
     }
 
-    gameLoop();
+    // Chỉ chạy game sau khi ảnh đã load xong
+    ball.img.onload = () => {
+      gameLoop();
+    };
   </script>
 </body>
 </html>
