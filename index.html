@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Catch the Ball</title>
@@ -7,41 +7,16 @@
     canvas {
       background: #f0f0f0;
       display: block;
-      margin: 20px auto;
+      margin: 0 auto;
       border: 2px solid #333;
-    }
-    #startScreen {
-      text-align: center;
-      margin-top: 100px;
-    }
-    #playerName {
-      padding: 8px;
-      font-size: 16px;
-    }
-    #startBtn {
-      padding: 8px 16px;
-      font-size: 16px;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <!-- Màn hình nhập tên -->
-  <div id="startScreen">
-    <h2>Nhập tên người chơi</h2>
-    <input type="text" id="playerName" placeholder="Tên của bạn...">
-    <button id="startBtn">Bắt đầu</button>
-  </div>
-
-  <!-- Game Canvas -->
-  <canvas id="gameCanvas" width="500" height="600" style="display:none;"></canvas>
-
+  <canvas id="gameCanvas" width="500" height="600"></canvas>
   <script>
     const canvas = document.getElementById("gameCanvas");
-    // make canvas focusable so we can call canvas.focus()
-    canvas.tabIndex = 0;
     const ctx = canvas.getContext("2d");
-    let playerName = "";
 
     // Người chơi
     const player = {
@@ -52,22 +27,18 @@
       speed: 7
     };
 
-    // Bóng (sử dụng hình ảnh)
+    // Bóng
     let ball = {
-      x: Math.random() * (canvas.width - 40),
+      x: Math.random() * (canvas.width - 20),
       y: 0,
-      size: 40,
-      speed: 4,
-      img: new Image()
+      size: 20,
+      speed: 4
     };
-    // nhớ đặt file ball.png cùng thư mục với index.html
-    ball.img.src = "ball.png";
 
     let score = 0;
     let lives = 3;
     let keys = {};
 
-    // lắng nghe phím trên document (hoạt động cả khi input không focus)
     document.addEventListener("keydown", (e) => keys[e.key] = true);
     document.addEventListener("keyup", (e) => keys[e.key] = false);
 
@@ -77,24 +48,18 @@
     }
 
     function drawBall() {
-      // vẽ ảnh quả bóng; nếu ảnh chưa load thì vẽ hình tròn thay thế
-      if (ball.img.complete && ball.img.naturalWidth !== 0) {
-        ctx.drawImage(ball.img, ball.x, ball.y, ball.size, ball.size);
-      } else {
-        ctx.beginPath();
-        ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.closePath();
-      }
+      ctx.beginPath();
+      ctx.arc(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, 0, Math.PI * 2);
+      ctx.fillStyle = "red";
+      ctx.fill();
+      ctx.closePath();
     }
 
     function drawInfo() {
       ctx.fillStyle = "black";
-      ctx.font = "18px Arial";
-      ctx.fillText("Tên: " + playerName, 10, 20);
-      ctx.fillText("Score: " + score, 10, 45);
-      ctx.fillText("Lives: " + lives, 10, 70);
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 10, 20);
+      ctx.fillText("Lives: " + lives, 10, 45);
     }
 
     function movePlayer() {
@@ -132,7 +97,7 @@
     function gameOver() {
       ctx.fillStyle = "red";
       ctx.font = "40px Arial";
-      ctx.fillText("GAME OVER", canvas.width / 2 - 120, canvas.height / 2);
+      ctx.fillText("GAME OVER", canvas.width / 2 - 100, canvas.height / 2);
     }
 
     function gameLoop() {
@@ -150,51 +115,7 @@
       }
     }
 
-    // Bắt đầu game khi nhấn nút
-    const startBtn = document.getElementById("startBtn");
-    startBtn.addEventListener("click", startGame);
-
-    // Nhấn Enter trong ô input cũng bắt đầu
-    document.getElementById("playerName").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") startGame();
-    });
-
-    function startGame() {
-      playerName = document.getElementById("playerName").value.trim();
-      if (playerName === "") playerName = "Người chơi";
-
-      // ẩn màn hình start, hiện canvas
-      document.getElementById("startScreen").style.display = "none";
-      canvas.style.display = "block";
-
-      // đảm bảo phím di chuyển được nhận
-      canvas.focus();
-
-      // disable nút để tránh bấm lại
-      startBtn.disabled = true;
-
-      // reset trạng thái game nếu cần
-      score = 0;
-      lives = 3;
-      player.x = canvas.width / 2 - player.width / 2;
-      ball.x = Math.random() * (canvas.width - ball.size);
-      ball.y = -20;
-
-      // Nếu ảnh đã load sẵn thì onload sẽ không chạy => kiểm tra .complete
-      if (ball.img.complete && ball.img.naturalWidth !== 0) {
-        gameLoop();
-      } else {
-        // nếu chưa load thì chờ onload
-        ball.img.onload = () => {
-          gameLoop();
-        };
-        // còn nếu ảnh bị lỗi (không tìm thấy), vẫn bắt đầu với hình tròn
-        ball.img.onerror = () => {
-          console.warn("Không tìm thấy ball.png — sẽ dùng hình tròn thay thế.");
-          gameLoop();
-        };
-      }
-    }
+    gameLoop();
   </script>
 </body>
 </html>
