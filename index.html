@@ -18,24 +18,26 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Người chơi
+    // Người chơi (dùng ảnh paddle)
     const player = {
-      x: canvas.width / 2 - 40,
-      y: canvas.height - 30,
-      width: 80,
-      height: 20,
-      speed: 7
+      x: canvas.width / 2 - 60,
+      y: canvas.height - 40,
+      width: 120,   // chiều rộng paddle
+      height: 30,   // chiều cao paddle
+      speed: 7,
+      img: new Image()
     };
+    player.img.src = "paddle.png"; // ảnh thanh ngang bạn cung cấp
 
     // Bóng (dùng ảnh)
     let ball = {
       x: Math.random() * (canvas.width - 40),
       y: 0,
-      size: 80,
+      size: 40,
       speed: 4,
       img: new Image()
     };
-    ball.img.src = "ball.png"; // ảnh của bạn
+    ball.img.src = "ball.png";
 
     let score = 0;
     let lives = 3;
@@ -45,12 +47,15 @@
     document.addEventListener("keyup", (e) => keys[e.key] = false);
 
     function drawPlayer() {
-      ctx.fillStyle = "blue";
-      ctx.fillRect(player.x, player.y, player.width, player.height);
+      if (player.img.complete) {
+        ctx.drawImage(player.img, player.x, player.y, player.width, player.height);
+      } else {
+        ctx.fillStyle = "blue";
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+      }
     }
 
     function drawBall() {
-      // Nếu ảnh load xong thì vẽ ảnh, nếu chưa load thì vẽ tạm hình tròn
       if (ball.img.complete) {
         ctx.drawImage(ball.img, ball.x, ball.y, ball.size, ball.size);
       } else {
@@ -88,7 +93,7 @@
         lives--;
       }
 
-      // Kiểm tra va chạm
+      // Kiểm tra va chạm với paddle
       if (
         ball.x < player.x + player.width &&
         ball.x + ball.size > player.x &&
@@ -122,11 +127,12 @@
       }
     }
 
-    // Chỉ chạy game sau khi ảnh đã load xong
-    ball.img.onload = () => {
-      gameLoop();
+    // Chỉ bắt đầu sau khi ảnh load
+    player.img.onload = () => {
+      ball.img.onload = () => {
+        gameLoop();
+      };
     };
   </script>
 </body>
 </html>
-
